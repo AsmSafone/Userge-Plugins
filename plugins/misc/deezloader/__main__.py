@@ -61,10 +61,7 @@ async def deezload(message: Message):
         return
 
     flags = list(message.flags)
-    if '-zip' not in flags:
-        to_zip = False
-    else:
-        to_zip = True
+    to_zip = '-zip' in flags
     d_quality = "MP3_320"
     if not message.filtered_input_str:
         await message.edit("Olá Peru Master🙂, Tell me how to download `Nothing`")

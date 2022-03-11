@@ -32,7 +32,7 @@ def init_client() -> None:
 async def download_track(url: Union[str, SongObj]) -> Path:
     init_client()
     song = url
-    if not isinstance(url, SongObj):
+    if not isinstance(song, SongObj):
         song = await pool.run_in_thread(SongObj.from_url)(song)
     return await DownloadManager().download_song(song)
 

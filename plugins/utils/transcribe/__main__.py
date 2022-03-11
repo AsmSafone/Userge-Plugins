@@ -159,7 +159,7 @@ async def stt_(message: Message):
             await message.err(e_e)
             return
     else:
-        input_str = match.group(2) if match.group(2) else ""
+        input_str = match.group(2) or ""
         is_input_url = is_url(input_str)
         if is_input_url:
             try:

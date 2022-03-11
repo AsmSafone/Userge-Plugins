@@ -42,12 +42,9 @@ CARBON = 'https://carbon.now.sh/?t={theme}&l={lang}&code={code}&bg={bg}'
         'solarized light', 'synthwave-84', 'twilight', 'verminal', 'vscode',
         'yeti', 'zenburn']}, del_pre=True)
 async def carbon_(message: Message):
+    replied = message.reply_to_message
     if carbon.GOOGLE_CHROME_BIN is None:
-        replied = message.reply_to_message
-        if replied:
-            text = replied.text
-        else:
-            text = message.text
+        text = replied.text if replied else message.text
         if not text:
             await message.err("need input text!")
             return
@@ -65,18 +62,22 @@ async def carbon_(message: Message):
             response = await conv.get_response(mark_read=True)
             while not response.media:
                 response = await conv.get_response(mark_read=True)
-            caption = "\n".join(response.caption.split("\n")[0:2])
+            caption = "\n".join(response.caption.split("\n")[:2])
             file_id = response.document.file_id
             await asyncio.gather(
                 message.delete(),
-                userge.send_document(chat_id=message.chat.id,
-                                     document=file_id,
-                                     caption='`' + caption + '`',
-                                     reply_to_message_id=replied.message_id if replied else None)
+                userge.send_document(
+                    chat_id=message.chat.id,
+                    document=file_id,
+                    caption=f'`{caption}`',
+                    reply_to_message_id=replied.message_id
+                    if replied
+                    else None,
+                ),
             )
+
     else:
         input_str = message.filtered_input_str
-        replied = message.reply_to_message
         theme = 'seti'
         lang = 'auto'
         red = message.flags.get('r', random.randint(0, 255))

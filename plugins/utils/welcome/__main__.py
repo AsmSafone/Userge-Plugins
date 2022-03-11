@@ -204,8 +204,12 @@ async def sayleft(msg: Message):
 
 async def raw_set(message: Message, name, collection, chats):
     replied = message.reply_to_message
-    string = message.input_or_reply_raw
-    if string or replied and replied.media:
+    if (
+        (string := message.input_or_reply_raw)
+        or not (string := message.input_or_reply_raw)
+        and replied
+        and replied.media
+    ):
         message_id = await CHANNEL.store(replied, string)
         await collection.update_one({'_id': message.chat.id},
                                     {"$set": {'mid': message_id, 'on': True}},

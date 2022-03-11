@@ -20,10 +20,12 @@ from userge import userge, Message
     'description': "get requoted text from a normal text",
     'usage': "{tr}requote [text]"})
 async def requote(update: Message):
-    if not update.input_str:
-        text = "Add requote text too."
-    else:
-        text = requote_uri(update.input_str)
+    text = (
+        requote_uri(update.input_str)
+        if update.input_str
+        else "Add requote text too."
+    )
+
     await update.edit(
         text=text,
         disable_web_page_preview=True

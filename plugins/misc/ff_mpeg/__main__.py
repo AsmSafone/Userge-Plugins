@@ -326,7 +326,7 @@ async def video_trim(message: Message):
         r'(\d{2}:\d{2}:\d{2})? ?(\d{2}:\d{2}:\d{2})?',
         message.filtered_input_str.split('|', 1)[0]
     )
-    if not (match and match.group(1) and match.group(2)):
+    if not match or not match.group(1) or not match.group(2):
         return await message.err("You muse specify end time at least!")
 
     data = await get_media_path_and_name(
@@ -340,7 +340,7 @@ async def video_trim(message: Message):
     dl_loc, file_name = data
     FF_MPEG_DOWN_LOAD_MEDIA_PATH.mkdir(parents=True, exist_ok=True)
     await message.edit("`Trimming media...`")
-    end_time = match.group(1) if not match.group(2) else match.group(2)
+    end_time = match.group(2) or match.group(1)
     start_time = match.group(1) if match.group(1) and match.group(1) != end_time else "00:00:00"
     video_file = f"{FF_MPEG_DOWN_LOAD_MEDIA_PATH}/trimmed_{file_name}"
     start = datetime.now()
@@ -397,9 +397,9 @@ async def video_compress(message: Message):
     target_size = (calculated_percentage / 100) * filesize
     target_bitrate = int(floor(target_size * 8 / total_time))
     if target_bitrate // 1000000 >= 1:
-        bitrate = str(target_bitrate // 1000000) + "M"
+        bitrate = f'{str(target_bitrate // 1000000)}M'
     else:
-        bitrate = str(target_bitrate // 1000) + "k"
+        bitrate = f'{str(target_bitrate // 1000)}k'
     video_file = f"{FF_MPEG_DOWN_LOAD_MEDIA_PATH}/compressed_{file_name}"
     start = datetime.now()
     try:

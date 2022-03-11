@@ -141,8 +141,6 @@ async def _autoname_worker():
     anicount = 0
     FONTS_ = deque(FONTS_)
     while UPDATION and NAME:
-        if not UPDATION:
-            break
         F = list(FONTS_)
         cur_list = list(F[0])
         to_rep_list = list(F[1])
@@ -152,7 +150,7 @@ async def _autoname_worker():
             if ch in cur_list:
                 rep_ch = to_rep_list[cur_list.index(ch)]
                 NAME = NAME.replace(ch, rep_ch, 1)
-                fname = animation[anicount] + ' $ ' + NAME + ' $ ' + animation[anicount]
+                fname = f'{animation[anicount]} $ {NAME} $ {animation[anicount]}'
                 try:
                     await userge.update_profile(first_name=fname)
                 except FloodWait as s_c:

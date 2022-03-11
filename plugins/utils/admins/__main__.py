@@ -52,7 +52,7 @@ async def mentionadmins(message: Message):
                 if show_id:
                     mentions += f" `{u_id}`"
     except Exception as e:
-        mentions += " " + str(e) + "\n"
+        mentions += f" {str(e)}" + "\n"
     await message.delete()
     await message.client.send_message(
         chat_id=message.chat.id, text=mentions,  disable_web_page_preview=True)

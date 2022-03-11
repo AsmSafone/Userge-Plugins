@@ -31,7 +31,7 @@ async def create_channel(message: Message):
         else:
             title, des = args, "This channel is created using @TheUserge"
         if len(des) > 256:
-            des = des.strip()[:253] + "..."
+            des = f'{des.strip()[:253]}...'
         await userge.create_channel(title.strip(), des.strip())
         await message.edit(f"Successfully made a new channel **{title.strip()}**")
     except Exception as e:

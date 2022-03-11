@@ -45,12 +45,10 @@ async def text_to_speech(message: Message):
         speeched.save(req_file_name)
         await message.edit("Processing...")
         meta = XMan(CPR(req_file_name))
-        a_len = 0
         a_title = "Text To Speech"
         a_perf = "Google"
         a_cap = f"Language Code: {def_lang}"
-        if meta and meta.has("duration"):
-            a_len = meta.get("duration").seconds
+        a_len = meta.get("duration").seconds if meta and meta.has("duration") else 0
         await message.edit("Uploading...")
         await message.reply_audio(
             audio=req_file_name,

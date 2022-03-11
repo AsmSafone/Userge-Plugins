@@ -56,9 +56,7 @@ async def snapper(message: Message):
         await message.err("required chat creator !")
         return
     chat_id = message.chat.id
-    act = 'Banning'
-    if '-k' in message.flags:
-        act = 'Kicking'
+    act = 'Kicking' if '-k' in message.flags else 'Banning'
     await message.edit(
         f"⚠️ {act} all Members of the chat. [`Check application logs"
         f" for status`]\nUse `{config.CMD_TRIGGER}cancel` as reply to "

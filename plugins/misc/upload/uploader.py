@@ -152,7 +152,6 @@ async def vid_upload(message: Message, path, del_path: bool = False,
 
 async def audio_upload(message: Message, path, del_path: bool = False,
                        extra: str = '', with_thumb: bool = True):
-    title = None
     artist = None
     thumb = None
     duration = 0
@@ -172,8 +171,7 @@ async def audio_upload(message: Message, path, del_path: bool = False,
         if not thumb:
             thumb = await get_thumb(str_path)
     metadata = extractMetadata(createParser(str_path))
-    if metadata and metadata.has("title"):
-        title = metadata.get("title")
+    title = metadata.get("title") if metadata and metadata.has("title") else None
     if metadata and metadata.has("artist"):
         artist = metadata.get("artist")
     if metadata and metadata.has("duration"):

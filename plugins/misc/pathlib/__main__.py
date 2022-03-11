@@ -318,10 +318,9 @@ class SCLib(_BaseLib):
 
     def split(self, split_size: int) -> None:
         """ Split files """
-        split_size = int(split_size) * 1024 * 1024
+        split_size = split_size * 1024 * 1024
         self._file_size = os.stat(self._path).st_size
-        if self._chunk_size > split_size:
-            self._chunk_size = split_size
+        self._chunk_size = min(self._chunk_size, split_size)
         times = int(ceil(split_size / self._chunk_size))
         self._total = int(ceil(self._file_size / split_size))
         self._final_file_path = join(

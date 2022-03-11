@@ -131,10 +131,7 @@ async def mirror_flip(message: Message):
     if mirror_flip_file is None:
         mirror_flip_file = dls_loc
     im = Image.open(mirror_flip_file).convert('RGB')
-    if Cmd == "mirror":
-        IMG = ImageOps.mirror(im)
-    else:
-        IMG = ImageOps.flip(im)
+    IMG = ImageOps.mirror(im) if Cmd == "mirror" else ImageOps.flip(im)
     IMG.save(Converted, quality=95)
     await message.client.send_sticker(
         message.chat.id,

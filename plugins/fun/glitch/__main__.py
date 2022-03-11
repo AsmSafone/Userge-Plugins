@@ -83,7 +83,7 @@ async def glitch_(message: Message):
     img = Image.open(glitch_file)
     message_id = replied.message_id
     if '-s' in message.flags:
-        glitched = config.Dynamic.DOWN_PATH + "glitched.webp"
+        glitched = f'{config.Dynamic.DOWN_PATH}glitched.webp'
         glitch_img = glitcher.glitch_image(img, args, color_offset=True)
         glitch_img.save(glitched)
         await message.client.send_sticker(
@@ -91,7 +91,6 @@ async def glitch_(message: Message):
             glitched,
             reply_to_message_id=message_id)
         os.remove(glitched)
-        await message.delete()
     else:
         glitch_img = glitcher.glitch_image(img, args, color_offset=True, gif=True)
         DURATION = 200
@@ -108,7 +107,7 @@ async def glitch_(message: Message):
             Glitched,
             reply_to_message_id=message_id)
         os.remove(Glitched)
-        await message.delete()
+    await message.delete()
     for files in (dls_loc, glitch_file):
         if files and os.path.exists(files):
             os.remove(files)

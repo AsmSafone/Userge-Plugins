@@ -33,10 +33,7 @@ async def _init():
 async def toggle_mentions(msg: Message):
     """ toggle mentions """
     global TOGGLE  # pylint: disable=global-statement
-    if TOGGLE:
-        TOGGLE = False
-    else:
-        TOGGLE = True
+    TOGGLE = not TOGGLE
     await SAVED_SETTINGS.update_one(
         {"_id": "MENTION_TOGGLE"}, {"$set": {"data": TOGGLE}}, upsert=True
     )
@@ -60,7 +57,7 @@ async def handle_mentions(msg: Message):
     else:
         link = msg.link
         text = f"{msg.from_user.mention} 💻 tagged you in **{msg.chat.title}.**"
-    text += f"\n\n[Message]({link}):" if not userge.has_bot else "\n\n**Message:**"
+    text += "\n\n**Message:**" if userge.has_bot else f"\n\n[Message]({link}):"
     if msg.text:
         text += f"\n`{msg.text}`"
 

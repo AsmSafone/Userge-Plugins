@@ -116,10 +116,10 @@ async def delete_filters(message: Message) -> None:
         out = "`Wrong syntax`\nNo arguements"
     elif await FILTERS_COLLECTION.find_one_and_delete(
             {'chat_id': message.chat.id, 'name': filter_}):
-        out = "`Successfully deleted filter:` **{}**".format(filter_)
+        out = f"`Successfully deleted filter:` **{filter_}**"
         _filter_deleter(message.chat.id, filter_)
     else:
-        out = "`Couldn't find filter:` **{}**".format(filter_)
+        out = f"`Couldn't find filter:` **{filter_}**"
     await message.edit(text=out, del_in=3)
 
 

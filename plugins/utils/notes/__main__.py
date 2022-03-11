@@ -108,10 +108,10 @@ async def remove_note(message: Message) -> None:
         out = "`Wrong syntax`\nNo arguements"
     elif await NOTES_COLLECTION.find_one_and_delete(
             {'chat_id': message.chat.id, 'name': notename}):
-        out = "`Successfully deleted note:` **{}**".format(notename)
+        out = f"`Successfully deleted note:` **{notename}**"
         _note_deleter(message.chat.id, notename)
     else:
-        out = "`Couldn't find note:` **{}**".format(notename)
+        out = f"`Couldn't find note:` **{notename}**"
     await message.edit(text=out, del_in=3)
 
 
@@ -129,10 +129,10 @@ async def mv_to_local_note(message: Message) -> None:
     elif await NOTES_COLLECTION.find_one_and_update(
             {'chat_id': message.chat.id, 'name': notename, 'global': True},
             {"$set": {'global': False}}):
-        out = "`Successfully transferred to local note:` **{}**".format(notename)
+        out = f"`Successfully transferred to local note:` **{notename}**"
         NOTES_DATA[message.chat.id][notename] = (NOTES_DATA[message.chat.id][notename][0], False)
     else:
-        out = "`Couldn't find global note:` **{}**".format(notename)
+        out = f"`Couldn't find global note:` **{notename}**"
     await message.edit(text=out, del_in=3)
 
 
@@ -150,10 +150,10 @@ async def mv_to_global_note(message: Message) -> None:
     elif await NOTES_COLLECTION.find_one_and_update(
             {'chat_id': message.chat.id, 'name': notename, 'global': False},
             {"$set": {'global': True}}):
-        out = "`Successfully transferred to global note:` **{}**".format(notename)
+        out = f"`Successfully transferred to global note:` **{notename}**"
         NOTES_DATA[message.chat.id][notename] = (NOTES_DATA[message.chat.id][notename][0], True)
     else:
-        out = "`Couldn't find local note:` **{}**".format(notename)
+        out = f"`Couldn't find local note:` **{notename}**"
     await message.edit(text=out, del_in=3)
 
 
@@ -175,17 +175,20 @@ async def get_note(message: Message) -> None:
     if config.OWNER_ID:
         can_access = can_access or message.from_user.id in config.OWNER_ID
     notename = message.matches[0].group(1).lower()
-    mid, is_global = (0, False)
-    for note in NOTES_DATA[message.chat.id]:
-        if note.lower() == notename:
-            mid, is_global = NOTES_DATA[message.chat.id][note]
-            break
+    mid, is_global = next(
+        (
+            NOTES_DATA[message.chat.id][note]
+            for note in NOTES_DATA[message.chat.id]
+            if note.lower() == notename
+        ),
+        (0, False),
+    )
+
     if not mid:
         return
     if can_access or is_global:
-        replied = message.reply_to_message
         user_id = message.from_user.id
-        if replied:
+        if replied := message.reply_to_message:
             reply_to_message_id = replied.message_id
             if replied.from_user:
                 user_id = replied.from_user.id

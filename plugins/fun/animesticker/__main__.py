@@ -31,11 +31,10 @@ from userge import userge, Message
 async def anime_sticker(message: Message):
     """ Creates random anime sticker! """
     replied = message.reply_to_message
-    args = message.filtered_input_str
-    if args:
+    if args := message.filtered_input_str:
         text = args
     elif replied:
-        text = args if args else replied.text
+        text = args or replied.text
     else:
         await message.err("Input not found!")
         return

@@ -75,8 +75,9 @@ async def creator(m: Message):
                 continue
 
     await m.edit(
-        f"<u>**GROUPS**</u> __({status})__:\n"
-        + ("(__None__)" if not g_str else g_str)
-        + f"\n<u>**CHANNELS**</u> __({status})__:\n"
-        + ("(__None__)" if not c_str else c_str)
+        (
+            (f"<u>**GROUPS**</u> __({status})__:\n" + (g_str or "(__None__)"))
+            + f"\n<u>**CHANNELS**</u> __({status})__:\n"
+        )
+        + (c_str or "(__None__)")
     )

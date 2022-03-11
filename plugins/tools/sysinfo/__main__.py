@@ -49,9 +49,7 @@ async def generate_sysinfo(workdir):
     # Network
     nio = psutil.net_io_counters()
     info['NET I/O'] = (f"TX {bytes2human(nio.bytes_sent)} | RX {bytes2human(nio.bytes_recv)}")
-    # Sensors
-    sensors_temperatures = psutil.sensors_temperatures()
-    if sensors_temperatures:
+    if sensors_temperatures := psutil.sensors_temperatures():
         temperatures_list = [
             x.current
             for x in sensors_temperatures['coretemp']

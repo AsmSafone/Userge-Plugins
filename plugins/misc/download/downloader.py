@@ -47,15 +47,11 @@ async def handle_download(message: Message, resource: Union[Message, str],
 async def url_download(message: Message, url: str) -> Tuple[str, int]:
     """ download from link """
     pattern = r"^(?:(?:https|tg):\/\/)?(?:www\.)?(?:t\.me\/|openmessage\?)(?:(?:c\/(\d+))|(\w+)|(?:user_id\=(\d+)))(?:\/|&message_id\=)(\d+)(\?single)?$"  # noqa
-    # group 1: private supergroup id, group 2: chat username,
-    # group 3: private group/chat id, group 4: message id
-    # group 5: check for download single media from media group
-    match = re.search(pattern, url.split('|', 1)[0].strip())
-    if match:
+    if match := re.search(pattern, url.split('|', 1)[0].strip()):
         chat_id = None
         msg_id = int(match.group(4))
         if match.group(1):
-            chat_id = int("-100" + match.group(1))
+            chat_id = int(f"-100{match.group(1)}")
         elif match.group(2):
             chat_id = match.group(2)
         elif match.group(3):
@@ -83,7 +79,7 @@ async def url_download(message: Message, url: str) -> Tuple[str, int]:
     downloader.start(blocking=False)
     with message.cancel_callback(downloader.stop):
         while not downloader.isFinished():
-            total_length = downloader.filesize if downloader.filesize else 0
+            total_length = downloader.filesize or 0
             downloaded = downloader.get_dl_size()
             percentage = downloader.get_progress() * 100
             speed = downloader.get_speed(human=True)

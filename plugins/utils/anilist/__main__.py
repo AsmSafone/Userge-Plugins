@@ -260,8 +260,7 @@ async def anim_arch(message: Message):
             }
 
     result = await return_json_senpai(ANIME_QUERY, vars_)
-    error = result.get('errors')
-    if error:
+    if error := result.get('errors'):
         await CLOG.log(f"**ANILIST RETURNED FOLLOWING ERROR:**\n\n`{error}`")
         error_sts = error[0].get('message')
         await message.err(f"[{error_sts}]")
@@ -304,8 +303,7 @@ async def anim_arch(message: Message):
         trailer_link = f"[Trailer](https://youtu.be/{data['trailer']['id']})"
     html_char = ""
     for character in data['characters']['nodes']:
-        html_ = ""
-        html_ += "<br>"
+        html_ = "" + "<br>"
         html_ += f"""<a href="{character['siteUrl']}">"""
         html_ += f"""<img src="{character['image']['large']}"/></a>"""
         html_ += "<br>"
@@ -315,9 +313,11 @@ async def anim_arch(message: Message):
         html_ += f"<h4>About Character and Role:</h4>{character.get('description', 'N/A')}"
         html_char += f"{html_}<br><br>"
 
-    studios = ""
-    for studio in data['studios']['nodes']:
-        studios += "<a href='{}'>• {}</a> ".format(studio['siteUrl'], studio['name'])
+    studios = "".join(
+        f"<a href='{studio['siteUrl']}'>• {studio['name']}</a> "
+        for studio in data['studios']['nodes']
+    )
+
     url = data.get('siteUrl')
 
     title_img = coverImg or bannerImg
@@ -378,8 +378,7 @@ async def airing_anim(message: Message):
             'type': "ANIME"
         }
     result = await return_json_senpai(ANIME_QUERY, vars_)
-    error = result.get('errors')
-    if error:
+    if error := result.get('errors'):
         await CLOG.log(f"**ANILIST RETURNED FOLLOWING ERROR:**\n\n`{error}`")
         error_sts = error[0].get('message')
         await message.err(f"[{error_sts}]")
@@ -439,8 +438,7 @@ async def get_schuled(message: Message):
     var = {'notYetAired': True}
     await message.edit("`Fetching Scheduled Animes`")
     result = await return_json_senpai(AIRING_QUERY, var)
-    error = result.get('errors')
-    if error:
+    if error := result.get('errors'):
         await CLOG.log(f"**ANILIST RETURNED FOLLOWING ERROR:**\n\n{error}")
         error_sts = error[0].get('message')
         await message.err(f"[{error_sts}]")
@@ -486,8 +484,7 @@ async def character_search(message: Message):
         'asHtml': True
     }
     result = await return_json_senpai(CHARACTER_QUERY, var)
-    error = result.get('errors')
-    if error:
+    if error := result.get('errors'):
         await CLOG.log(f"**ANILIST RETURNED FOLLOWING ERROR:**\n\n`{error}`")
         error_sts = error[0].get('message')
         await message.err(f"[{error_sts}]")
@@ -510,7 +507,7 @@ async def character_search(message: Message):
         out = "<br>"
         out += f'''<img src="{cf['coverImage']['extraLarge']}"/>'''
         out += "<br>"
-        title = cf['title']['english'] if cf['title']['english'] else cf['title']['romaji']
+        title = cf['title']['english'] or cf['title']['romaji']
         out += f"<h3>{title}</h3>"
         out += f"<em>[🇯🇵] {cf['title']['native']}</em><br>"
         out += f'''<a href="{cf['siteUrl']}>{cf['type']}</a><br>'''

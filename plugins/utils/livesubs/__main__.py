@@ -21,9 +21,8 @@ from userge import userge, Message
     'header': "Live Subscriber count for Public Groups and Channels",
     'usage': "{tr}livesubs [chat id]"})
 async def live_subs(msg: Message):
-    input_ = msg.input_str
     chat = msg.chat if msg.chat.type != "private" else None
-    if input_:
+    if input_ := msg.input_str:
         try:
             chat = await msg.client.get_chat(input_)
         except Exception:

@@ -79,8 +79,7 @@ async def send_new_post(entries):
     author = None
     author_link = None
 
-    thumb_url = entries.get('media_thumbnail')
-    if thumb_url:
+    if thumb_url := entries.get('media_thumbnail'):
         thumb_url = thumb_url[0].get('url')
         thumb = os.path.join(config.Dynamic.DOWN_PATH, f"{title}.{str(thumb_url).split('.')[-1]}")
         if not os.path.exists(thumb):
@@ -112,7 +111,7 @@ async def send_new_post(entries):
             'reply_markup': markup if userge.has_bot else None
         }
     for chat_id in rss_feed.RSS_CHAT_ID:
-        args.update({'chat_id': chat_id})
+        args['chat_id'] = chat_id
         try:
             await send_rss_to_telegram(userge.bot, args, thumb)
         except (
@@ -121,9 +120,9 @@ async def send_new_post(entries):
         ):
             out_str += f"\n\n[View Post Online]({link})"
             if 'caption' in args:
-                args.update({'caption': out_str})
+                args['caption'] = out_str
             else:
-                args.update({'text': out_str})
+                args['text'] = out_str
             await send_rss_to_telegram(userge, args, thumb)
 
 
