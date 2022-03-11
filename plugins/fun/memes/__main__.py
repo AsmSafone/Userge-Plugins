@@ -28,7 +28,7 @@ async def kek_(message: Message):
     """kek"""
     kek = ["/", "\\"]
     for i in range(1, 9):
-        await message.try_to_edit(":" + kek[i % 2])
+        await message.try_to_edit(f":{kek[i % 2]}")
 
 
 @userge.on_cmd(r"(?:Lol|-_-)$",
@@ -40,7 +40,7 @@ async def lol_(message: Message):
     for i in range(9):
         if i % 3 == 0:
             lol = "-_ "
-        lol = lol[:-1] + "_-"
+        lol = f'{lol[:-1]}_-'
         await message.try_to_edit(lol, parse_mode="html")
 
 
@@ -53,7 +53,7 @@ async def fun_(message: Message):
     for i in range(9):
         if i % 3 == 0:
             fun = ";_ "
-        fun = fun[:-1] + "_;"
+        fun = f'{fun[:-1]}_;'
         await message.try_to_edit(fun, parse_mode="html")
 
 
@@ -63,7 +63,7 @@ async def Oof_(message: Message):
     """Oof"""
     Oof = "Oo "
     for _ in range(6):
-        Oof = Oof[:-1] + "of"
+        Oof = f'{Oof[:-1]}of'
         await message.try_to_edit(Oof)
 
 
@@ -73,13 +73,12 @@ async def Hmm_(message: Message):
     """Hmm"""
     Hmm = "Hm "
     for _ in range(4):
-        Hmm = Hmm[:-1] + "mm"
+        Hmm = f'{Hmm[:-1]}mm'
         await message.try_to_edit(Hmm)
 
 
 async def check_and_send(message: Message, *args, **kwargs):
-    replied = message.reply_to_message
-    if replied:
+    if replied := message.reply_to_message:
         await asyncio.gather(
             message.delete(),
             replied.reply(*args, **kwargs)
@@ -111,10 +110,7 @@ async def insult_(message: Message):
     'usage': "{tr}hi\n{tr}hi [emoji | character]\n{tr}hi [emoji | character] [emoji | character]"})
 async def hi_(message: Message):
     """hi"""
-    input_str = message.input_str
-    if not input_str:
-        await message.edit(choice(HELLOSTR), parse_mode="html")
-    else:
+    if input_str := message.input_str:
         args = input_str.split()
         if len(args) == 2:
             paytext, filler = args
@@ -135,6 +131,8 @@ async def hi_(message: Message):
             paytext * 2 + filler * 4 + paytext * 2 + filler * 2 + paytext * 2,
             paytext * 2 + filler * 4 + paytext * 2 + filler * 2 + paytext * 2)
         await message.edit(pay)
+    else:
+        await message.edit(choice(HELLOSTR), parse_mode="html")
 
 
 @userge.on_cmd("react", about={
@@ -387,10 +385,7 @@ async def copypasta(message: Message):
         elif owo.lower() == b_char:
             reply_text += "🅱️"
         else:
-            if bool(getrandbits(1)):
-                reply_text += owo.upper()
-            else:
-                reply_text += owo.lower()
+            reply_text += owo.upper() if bool(getrandbits(1)) else owo.lower()
     reply_text += choice(EMOJIS)
     await message.edit(reply_text)
 
@@ -442,7 +437,7 @@ async def zal_(message: Message):
         if not charac.isalpha():
             reply_text.append(charac)
             continue
-        for _ in range(0, 3):
+        for _ in range(3):
             randint_ = randint(0, 2)
             if randint_ == 0:
                 charac = charac.strip() + choice(ZALG_LIST[0]).strip()
@@ -467,9 +462,9 @@ async def owo_(message: Message):
     reply_text = sub(r"([RL])", "W", reply_text)
     reply_text = sub(r"n([aeiou])", r"ny\1", reply_text)
     reply_text = sub(r"N([aeiouAEIOU])", r"Ny\1", reply_text)
-    reply_text = sub(r"!", " " + choice(UWUS), reply_text)
+    reply_text = sub(r"!", f" {choice(UWUS)}", reply_text)
     reply_text = reply_text.replace("ove", "uv")
-    reply_text += " " + choice(UWUS)
+    reply_text += f" {choice(UWUS)}"
     await message.edit(reply_text)
 
 

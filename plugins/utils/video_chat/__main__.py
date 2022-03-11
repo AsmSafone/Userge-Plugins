@@ -1086,10 +1086,8 @@ async def yt_down(msg: Message):
 
     await message.delete()
 
-    BACK_BUTTON_TEXT = (
-        f"🎶 **Now playing:** [{title}]({url})\n"
-        f"⏳ **Duration:** `{'Live' if not duration else time_formatter(duration)}`\n"
-        f"🎧 **Requested By:** {requester(msg)}")
+    BACK_BUTTON_TEXT = f"🎶 **Now playing:** [{title}]({url})\n⏳ **Duration:** `{time_formatter(duration) if duration else 'Live'}`\n🎧 **Requested By:** {requester(msg)}"
+
 
     raw_msg = await reply_text(
         msg,
@@ -1166,10 +1164,8 @@ async def tg_down(msg: Message):
 
     await message.delete()
 
-    BACK_BUTTON_TEXT = (
-        f"🎶 **Now playing:** [{title}]({msg.link})\n"
-        f"⏳ **Duration:** `{'Live' if not duration else time_formatter(duration)}`\n"
-        f"🎧 **Requested By:** {requester(msg)}")
+    BACK_BUTTON_TEXT = f"🎶 **Now playing:** [{title}]({msg.link})\n⏳ **Duration:** `{time_formatter(duration) if duration else 'Live'}`\n🎧 **Requested By:** {requester(msg)}"
+
 
     raw_msg = await reply_text(
         msg,
@@ -1284,15 +1280,11 @@ async def get_file_info(file) -> Tuple[int, int, bool, bool]:
 
 def requester(msg: Message):
     if not msg.from_user:
-        if msg.sender_chat:
-            return msg.sender_chat.title
-        return None
+        return msg.sender_chat.title if msg.sender_chat else None
     replied = msg.reply_to_message
     if replied and msg.client.id == msg.from_user.id:
         if not replied.from_user:
-            if replied.sender_chat:
-                return replied.sender_chat.title
-            return None
+            return replied.sender_chat.title if replied.sender_chat else None
         return replied.from_user.mention
     return msg.from_user.mention
 
@@ -1345,7 +1337,7 @@ def _get_song_info(url: str):
 
         if duration > video_chat.MAX_DURATION:
             return False
-    return info.get("title"), duration if duration else 0
+    return info.get("title"), duration or 0
 
 
 if userge.has_bot:

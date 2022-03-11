@@ -241,14 +241,12 @@ async def lastfm_worker():
 
 def _check_creds() -> bool:
     """ check creds """
-    if (
+    return bool((
         lastfm.API_KEY
         and lastfm.API_SECRET
         and lastfm.USERNAME
         and lastfm.PASSWORD
-    ):
-        return True
-    return False
+    ))
 
 
 def get_track_info(track: pylast.Track) -> Optional[str]:
@@ -256,13 +254,8 @@ def get_track_info(track: pylast.Track) -> Optional[str]:
         duration = time_formatter(int(track.get_duration()) / 1000)
         _tags = track.get_tags()
         tags = " ".join([f'`{i}`' for i in _tags]) if len(_tags) > 0 else '`None`'
-        out = f'''__LastFm's__ [{track.get_correction()}]({unquote(track.get_url())})
+        out = f'''__LastFm's__ [{track.get_correction()}]({unquote(track.get_url())})\x1f\x1f__Duration:__ `{duration or None}`\x1f__Is_Loved:__ `{bool(track.get_userloved())}`\x1f__Is_Streamable:__ `{bool(track.is_streamable())}`\x1f__Tags:__ {tags}\x1f'''
 
-__Duration:__ `{duration if duration else None}`
-__Is_Loved:__ `{bool(track.get_userloved())}`
-__Is_Streamable:__ `{bool(track.is_streamable())}`
-__Tags:__ {tags}
-'''
     except pylast.WSError:
         return None
     else:
@@ -336,10 +329,10 @@ class LastFm:
         if self.msg.input_str and self.msg.input_str.is_numeric():
             limit = int(self.msg.input_str)
         tracks = (self.get_user()).get_loved_tracks(limit=limit)
-        out = ""
-        for i, track in enumerate(tracks, start=1):
-            out += f"`{i}.` `{str(track[0])}` 💕\n"
-        if out:
+        if out := "".join(
+            f"`{i}.` `{str(track[0])}` 💕\n"
+            for i, track in enumerate(tracks, start=1)
+        ):
             return await self.msg.edit(out)
         await self.msg.err("No loved tracks found.")
 

@@ -64,7 +64,7 @@ async def wall_(msg: Message):
 
             await pool.run_in_thread(wget.download)(_json[i]['urls']['thumb'], img)
             image = Image.open(img)
-            if not (image.height <= 1280 and image.width <= 1280):
+            if image.height > 1280 or image.width > 1280:
                 image.thumbnail((1280, 1280), Image.ANTIALIAS)
                 a_dex = image.mode.find("A")
                 if a_dex != -1:

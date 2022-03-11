@@ -32,9 +32,9 @@ async def create_button(msg: Message):
         await msg.err("First Create a Bot via @Botfather to Create Buttons...")
         return
     string = msg.input_raw
+    replied = msg.reply_to_message
     if not msg.client.is_bot:
         client = msg.client.bot
-        replied = msg.reply_to_message
         if replied:
             try:
                 replied = await client.get_messages(
@@ -47,7 +47,6 @@ async def create_button(msg: Message):
                 return
     else:
         client = msg.client
-        replied = msg.reply_to_message
     file_id = None
     if replied:
         if replied.caption:

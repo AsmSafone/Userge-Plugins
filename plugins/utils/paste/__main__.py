@@ -51,12 +51,10 @@ class PasteService:
 
     async def get_paste(self, ses: aiohttp.ClientSession, code: str) -> Optional[str]:
         """ returns pasted text using this code or None if failed """
-        async with ses.get(self._url + "raw/" + code) as resp:
+        async with ses.get(f'{self._url}raw/{code}') as resp:
             if resp.status == 404:
                 async with ses.get(self._url + code + "/raw") as _resp:
-                    if _resp.status != 200:
-                        return None
-                    return await _resp.text()
+                    return None if _resp.status != 200 else await _resp.text()
             if resp.status != 200:
                 return None
             return await resp.text()
@@ -68,14 +66,14 @@ class NekoBin(PasteService):
 
     async def paste(self, ses: aiohttp.ClientSession,
                     text: str, file_type: Optional[str]) -> Optional[str]:
-        async with ses.post(self._url + "api/documents", json={"content": text}) as resp:
+        async with ses.post(f'{self._url}api/documents', json={"content": text}) as resp:
             if resp.status != 201:
                 return None
             data = await resp.json()
             return _get_url(self._url + data['result']['key'], file_type)
 
     async def get_paste(self, ses: aiohttp.ClientSession, code: str) -> Optional[str]:
-        async with ses.get(self._url + "api/documents/" + code) as resp:
+        async with ses.get(f'{self._url}api/documents/{code}') as resp:
             if resp.status != 200:
                 return None
             data = await resp.json()
@@ -88,7 +86,7 @@ class HasteBin(PasteService):
 
     async def paste(self, ses: aiohttp.ClientSession,
                     text: str, file_type: Optional[str]) -> Optional[str]:
-        async with ses.post(self._url + "documents", data=text) as resp:
+        async with ses.post(f'{self._url}documents', data=text) as resp:
             if resp.status != 200:
                 return None
             data = await resp.json()
@@ -105,13 +103,11 @@ class Rentry(PasteService):
         if not token:
             return None
         if file_type:
-            text = f"```{file_type}\n" + text + "\n```"
+            text = f"```{file_type}\n{text}" + "\n```"
         async with ses.post(self._url,
-                            data=dict(csrfmiddlewaretoken=token, text=text),
-                            headers=dict(Referer=self._url)) as resp:
-            if resp.status != 200:
-                return None
-            return str(resp.url)
+                                data=dict(csrfmiddlewaretoken=token, text=text),
+                                headers=dict(Referer=self._url)) as resp:
+            return None if resp.status != 200 else str(resp.url)
 
 
 class Pasting(PasteService):
@@ -126,10 +122,8 @@ class Pasting(PasteService):
         }
         if file_type:
             data['code'] = "true"
-        async with ses.post(self._url + "api", json=data) as resp:
-            if resp.status != 200:
-                return None
-            return self._url + (await resp.json())['key']
+        async with ses.post(f'{self._url}api', json=data) as resp:
+            return None if resp.status != 200 else self._url + (await resp.json())['key']
 
 
 class PastyLus(PasteService):
@@ -139,7 +133,7 @@ class PastyLus(PasteService):
     async def paste(self, ses: aiohttp.ClientSession,
                     text: str, file_type: Optional[str]) -> Optional[str]:
         try:
-            async with ses.post(self._url + "api/v2/pastes/", json={"content": text}) as resp:
+            async with ses.post(f'{self._url}api/v2/pastes/', json={"content": text}) as resp:
                 if resp.status != 201:
                     return None
                 code = _get_id(await resp.text())
@@ -160,9 +154,7 @@ class KatBin(PasteService):
         if not token:
             return None
         async with ses.post(self._url, data={"_csrf_token": token, "paste[content]": text}) as resp:
-            if resp.status != 200:
-                return None
-            return _get_url(str(resp.url), file_type)
+            return None if resp.status != 200 else _get_url(str(resp.url), file_type)
 
 
 class SpaceBin(PasteService):
@@ -183,9 +175,7 @@ class SpaceBin(PasteService):
 
     async def get_paste(self, ses: aiohttp.ClientSession, code: str) -> Optional[str]:
         async with ses.get(self._api_url + code + "/raw") as resp:
-            if resp.status != 200:
-                return None
-            return await resp.text()
+            return None if resp.status != 200 else await resp.text()
 
 
 _SERVICES: Dict[str, PasteService] = {
@@ -207,7 +197,7 @@ def _get_id(text: str) -> Optional[str]:
 
 def _get_url(url: str, file_type: Optional[str]) -> str:
     if file_type:
-        url += "." + file_type
+        url += f".{file_type}"
     return url
 
 

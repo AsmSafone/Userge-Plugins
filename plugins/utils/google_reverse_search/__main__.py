@@ -26,7 +26,6 @@ from userge.utils import take_screen_shot
 async def google_rs(message: Message):
     start = datetime.now()
     dis_loc = ''
-    base_url = "http://www.google.com"
     out_str = "Reply to an image to do Google Reverse Search"
     if message.reply_to_message:
         await message.edit("Downloading Media to my Local")
@@ -48,8 +47,9 @@ async def google_rs(message: Message):
                 await message.err("Something went wrong in Conversion")
                 return
             dis_loc = img_file
+        base_url = "http://www.google.com"
         if dis_loc:
-            search_url = "{}/searchbyimage/upload".format(base_url)
+            search_url = f"{base_url}/searchbyimage/upload"
             multipart = {
                 "encoded_image": (dis_loc, open(dis_loc, "rb")),
                 "image_content": ""

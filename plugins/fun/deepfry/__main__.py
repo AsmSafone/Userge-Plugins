@@ -193,28 +193,26 @@ async def fry_(message: Message):
         media = await userge.send_photo(chat, frying_file)
         await conv.get_response(mark_read=True)
         await userge.send_message(
-            chat,
-            "/deepfry {}".format(args),
-            reply_to_message_id=media.message_id,
+            chat, f"/deepfry {args}", reply_to_message_id=media.message_id
         )
+
         response = await conv.get_response(mark_read=True)
         if not response.photo:
             await message.err("Bot is Down, try to restart Bot !...", del_in=5)
             return
         message_id = replied.message_id
         deep_fry = None
-        if response.photo:
-            directory = config.Dynamic.DOWN_PATH
-            files_name = "fry.webp"
-            deep_fry = os.path.join(directory, files_name)
-            await message.client.download_media(
-                message=response,
-                file_name=deep_fry)
-            await message.client.send_sticker(
-                message.chat.id,
-                sticker=deep_fry,
-                reply_to_message_id=message_id,
-            )
+        directory = config.Dynamic.DOWN_PATH
+        files_name = "fry.webp"
+        deep_fry = os.path.join(directory, files_name)
+        await message.client.download_media(
+            message=response,
+            file_name=deep_fry)
+        await message.client.send_sticker(
+            message.chat.id,
+            sticker=deep_fry,
+            reply_to_message_id=message_id,
+        )
     await message.delete()
     for garb in (dls_loc, frying_file, deep_fry):
         if garb and os.path.exists(garb):

@@ -8,8 +8,11 @@
 
 """ custom thumbnail """
 
+
 from userge import config
 
 
+
+
 class Dynamic:
-    THUMB_PATH = config.Dynamic.DOWN_PATH + "thumb_image.jpg"
+    THUMB_PATH = f'{config.Dynamic.DOWN_PATH}thumb_image.jpg'

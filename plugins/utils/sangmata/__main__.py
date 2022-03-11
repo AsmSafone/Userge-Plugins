@@ -36,13 +36,18 @@ async def sangmata_(message: Message):
     try:
         async with userge.conversation(chat) as conv:
             try:
-                await conv.send_message("/search_id {}".format(user))
+                await conv.send_message(f"/search_id {user}")
             except YouBlockedUser:
                 await message.err(f"**{ERROR_MSG}**", del_in=5)
                 return
-            msgs.append(await conv.get_response(mark_read=True))
-            msgs.append(await conv.get_response(mark_read=True))
-            msgs.append(await conv.get_response(timeout=3, mark_read=True))
+            msgs.extend(
+                (
+                    await conv.get_response(mark_read=True),
+                    await conv.get_response(mark_read=True),
+                    await conv.get_response(timeout=3, mark_read=True),
+                )
+            )
+
     except StopConversation:
         pass
     name = "Name History"

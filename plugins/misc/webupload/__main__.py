@@ -68,8 +68,7 @@ async def web(message: Message):
         stderr=asyncio.subprocess.PIPE
     )
     response, err = await process.communicate()
-    links = '\n'.join(re.findall(r'https?://[^\"\']+', response.decode()))
-    if links:
+    if links := '\n'.join(re.findall(r'https?://[^\"\']+', response.decode())):
         await message.edit(f"**Found these links** :\n{links}")
     else:
-        await message.edit('`' + response.decode() + err.decode() + '`')
+        await message.edit(f'`{response.decode()}{err.decode()}`')

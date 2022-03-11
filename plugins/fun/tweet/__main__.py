@@ -127,7 +127,7 @@ async def _tweets(msg: Message, text: str, username: str = '', type_: str = "twe
     if not url(tweets_):
         await msg.err("Invalid Syntax, Exiting...")
         return
-    tmp_file = config.Dynamic.DOWN_PATH + "temp.png"
+    tmp_file = f'{config.Dynamic.DOWN_PATH}temp.png'
     with open(tmp_file, "wb") as t_f:
         t_f.write(requests.get(tweets_).content)
     img = Image.open(tmp_file)

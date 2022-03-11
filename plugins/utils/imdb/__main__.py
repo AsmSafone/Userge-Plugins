@@ -91,10 +91,8 @@ async def get_movie_description(imdb_id, max_length):
     mov_rating = soup.get("UserRating").get("rating")
     if mov_rating.strip() == '/':
         mov_rating = "<code>Ratings not found!</code>"
-    else:
-        users = soup.get("UserRating").get("numeric_description_only")
-        if users:
-            mov_rating += f" (based on {users} users)"
+    elif users := soup.get("UserRating").get("numeric_description_only"):
+        mov_rating += f" (based on {users} users)"
     if duration:
         genres.append(duration)
 
@@ -120,7 +118,7 @@ async def get_movie_description(imdb_id, max_length):
     povas = await search_jw(mov_name, imdb.WATCH_COUNTRY)
     if len(description + povas) > max_length:
         inc = max_length - len(description + povas)
-        description = description[:inc - 3].strip() + "..."
+        description = f'{description[:inc - 3].strip()}...'
     if povas != "":
         description += f"\n\n{povas}"
     return image_link, description
@@ -131,17 +129,11 @@ def get_countries_and_languages(soup):
     countries = soup.get("CountryOfOrigin")
     lg_text = ""
     if languages:
-        if len(languages) > 1:
-            lg_text = ', '.join(languages)
-        else:
-            lg_text = languages[0]
+        lg_text = ', '.join(languages) if len(languages) > 1 else languages[0]
     else:
         lg_text = "No Languages Found!"
     if countries:
-        if len(countries) > 1:
-            ct_text = ', '.join(countries)
-        else:
-            ct_text = countries[0]
+        ct_text = ', '.join(countries) if len(countries) > 1 else countries[0]
     else:
         ct_text = "No Country Found!"
     return ct_text, lg_text

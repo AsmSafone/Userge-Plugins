@@ -23,7 +23,7 @@ async def _calendar(message: Message):
     if not message.input_str:
         await message.edit("`Searching...`")
         try:
-            today = datetime.today()
+            today = datetime.now()
             input_ = calendar.month(today.year, today.month)
             await message.edit(f"```{input_}```")
         except Exception as e:

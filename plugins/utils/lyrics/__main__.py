@@ -28,7 +28,7 @@ async def glyrics(message: Message):
         await message.edit("Bruh WTF?")
         return
     await message.edit(f"__Searching Lyrics For {song}__")
-    to_search = song + "genius lyrics"
+    to_search = f'{song}genius lyrics'
     gen_surl = list(search(to_search, num=1, stop=1))[0]
     async with ClientSession() as ses, ses.get(gen_surl) as res:
         gen_page = await res.text()
@@ -41,8 +41,8 @@ async def glyrics(message: Message):
     title = scp.find('title').get_text().split("|")
     writers = await get_writers(scp) or "UNKNOWN"
     lyr_format = ''
-    lyr_format += '**' + title[0] + '**\n\n'
-    lyr_format += '__' + lyrics + '__'
+    lyr_format += f'**{title[0]}' + '**\n\n'
+    lyr_format += f'__{lyrics}__'
     lyr_format += "\n\n**Written By: **" + '__' + writers + '__'
     lyr_format += "\n**Source: **" + '`' + title[1] + '`'
 

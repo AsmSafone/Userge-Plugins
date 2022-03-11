@@ -36,7 +36,7 @@ async def grab_time(message: Message):
     country_input = await flag_checks(message)
     if country_input is None:
         return
-    country_code = COUNTRY_CITY if not country_input else country_input
+    country_code = country_input or COUNTRY_CITY
     try:
         timezone(country_code)
     except BaseException:

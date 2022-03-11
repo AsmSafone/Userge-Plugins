@@ -52,7 +52,7 @@ async def remove_background(message: Message):
         try:
             rmbg = RemoveBg(removebg.REMOVE_BG_API_KEY, "removebg_error.log")
             rmbg.remove_background_from_img_file(IMG_PATH)
-            rbg_img_path = IMG_PATH + "_no_bg.png"
+            rbg_img_path = f'{IMG_PATH}_no_bg.png'
             await message.client.send_document(
                 chat_id=message.chat.id,
                 document=rbg_img_path,

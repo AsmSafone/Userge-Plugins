@@ -23,11 +23,8 @@ from userge import userge, Message
 async def create_poll(msg: Message):
     """" Create poll """
     options = ["Yes, Sure 😎", "No interest 🙄", "What..? 😳😳🤔🤔"]
-    anonymous = True
-    if '-n' in msg.flags:
-        anonymous = False
-    replied = msg.reply_to_message
-    if replied:
+    anonymous = '-n' not in msg.flags
+    if replied := msg.reply_to_message:
         query = "Do you agree with that replied Suggestion..?"
         msg_id = replied.message_id
         await userge.send_poll(

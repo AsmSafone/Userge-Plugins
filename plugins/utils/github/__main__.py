@@ -23,14 +23,14 @@ from userge import userge, Message
     'usage': ".github [flag] [username]",
     'examples': [".github cyberboysumanjay", ".github -l5 cyberboysumanjay"]})
 async def fetch_github_info(message: Message):
-    replied = message.reply_to_message
-    username = message.filtered_input_str
-    if replied:
+    if replied := message.reply_to_message:
         username = replied.text
+    else:
+        username = message.filtered_input_str
     if not username:
         await message.err("invalid input !")
         return
-    url = "https://api.github.com/users/{}".format(username)
+    url = f"https://api.github.com/users/{username}"
     res = requests.get(url)
     if res.status_code == 200:
         await message.edit("`fetching github info ...`")
@@ -68,4 +68,4 @@ async def fetch_github_info(message: Message):
                                         disable_notification=True)
         await message.delete()
     else:
-        await message.edit("No user found with `{}` username!".format(username))
+        await message.edit(f"No user found with `{username}` username!")
